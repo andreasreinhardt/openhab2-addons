@@ -10,6 +10,8 @@ package org.openhab.binding.kodi.handler;
 
 import static org.openhab.binding.kodi.KodiBindingConstants.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -205,6 +207,8 @@ public class KodiHandler extends BaseThingHandler implements KodiEventListener {
             case CHANNEL_SHOWTITLE:
             case CHANNEL_MEDIATYPE:
             case CHANNEL_PVR_CHANNEL:
+            case CHANNEL_THUMBNAIL:
+            case CHANNEL_FANART:
                 if (command.equals(RefreshType.REFRESH)) {
                     connection.updatePlayerStatus();
                 }
@@ -214,6 +218,12 @@ public class KodiHandler extends BaseThingHandler implements KodiEventListener {
                 break;
         }
 
+    }
+
+    private URI getImageBaseUrl() throws URISyntaxException {
+        String host = this.getConfig().get(HOST_PARAMETER).toString();
+        int httpPort = getIntConfigParameter(HTTP_PORT_PARAMETER, 8080);
+        return new URI(String.format("http://%s:%d/image/", host, httpPort));
     }
 
     public void playURI(Command command) {
@@ -254,7 +264,7 @@ public class KodiHandler extends BaseThingHandler implements KodiEventListener {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                         "No network address specified");
             } else {
-                connection.connect(host, getIntConfigParameter(PORT_PARAMETER, 9090), scheduler);
+                connection.connect(host, getIntConfigParameter(WS_PORT_PARAMETER, 9090), scheduler, getImageBaseUrl());
 
                 // Start the connection checker
                 Runnable connectionChecker = new Runnable() {
@@ -373,6 +383,16 @@ public class KodiHandler extends BaseThingHandler implements KodiEventListener {
     @Override
     public void updatePVRChannel(final String channel) {
         updateState(CHANNEL_PVR_CHANNEL, new StringType(channel));
+    }
+
+    @Override
+    public void updateThumbnail(String thumbnail) {
+        updateState(CHANNEL_THUMBNAIL, new StringType(thumbnail));
+    }
+
+    @Override
+    public void updateFanart(String fanart) {
+        updateState(CHANNEL_FANART, new StringType(fanart));
     }
 
 }
