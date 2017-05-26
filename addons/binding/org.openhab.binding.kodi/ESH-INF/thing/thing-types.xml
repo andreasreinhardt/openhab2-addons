@@ -23,6 +23,8 @@
 			<channel id="album" typeId="album" />
 			<channel id="artist" typeId="artist" />
 			<channel id="mediatype" typeId="mediatype" />
+			<channel id="thumbnail" typeId="thumbnail" />
+			<channel id="fanart" typeId="fanart" />
 		</channels>
 
 		<properties>
@@ -35,10 +37,15 @@
 				<description>The IP or host name of the kodi</description>
 				<context>network-address</context>
 			</parameter>
-			<parameter name="port" type="integer" required="true" min="1" max="65335">
+			<parameter name="wsPort" type="integer" required="true" min="1" max="65335">
 				<label>Web socket service port</label>
 				<description>Port for the web socket service</description>
 				<default>9090</default>
+			</parameter>
+			<parameter name="httpPort" type="integer" required="true" min="1" max="65335">
+				<label>HTTP service port</label>
+				<description>Port for the HTTP service. You have to enable it under Settings/Services/Control/Webserver</description>
+				<default>8080</default>
 			</parameter>
 		</config-description>
 	</thing-type>
@@ -145,6 +152,18 @@
 		<item-type>String</item-type>
 		<label>Media Type</label>
 		<description>Media type of the current file</description>
+		<state readOnly="true" pattern="%s"></state>
+	</channel-type>
+	<channel-type id="thumbnail">
+		<item-type>String</item-type>
+		<label>Thumbnail</label>
+		<description>URL to the current thumbnail</description>
+		<state readOnly="true" pattern="%s"></state>
+	</channel-type>
+	<channel-type id="fanart">
+		<item-type>String</item-type>
+		<label>Fanart</label>
+		<description>URL to the current fanart</description>
 		<state readOnly="true" pattern="%s"></state>
 	</channel-type>
 </thing:thing-descriptions>

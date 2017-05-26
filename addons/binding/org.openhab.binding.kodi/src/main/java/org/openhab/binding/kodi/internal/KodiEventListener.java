@@ -47,4 +47,8 @@ public interface KodiEventListener extends EventListener {
     void updateArtist(String artist);
 
     void updateMediaType(String mediaType);
+
+    void updateThumbnail(String thumbnail);
+
+    void updateFanart(String fanart);
 }
